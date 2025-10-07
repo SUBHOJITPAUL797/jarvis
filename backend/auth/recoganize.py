@@ -25,6 +25,12 @@ def AuthenticateFace():
 
 
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW to remove warning
+    
+    # Check if camera opened successfully
+    if not cam.isOpened():
+        print("Error: Could not open camera")
+        return 0
+    
     cam.set(3, 640)  # set video FrameWidht
     cam.set(4, 480)  # set video FrameHeight
 
@@ -37,6 +43,11 @@ def AuthenticateFace():
     while True:
 
         ret, img = cam.read()  # read the frames using the above created object
+        
+        # Check if frame was read successfully
+        if not ret or img is None:
+            print("Error: Could not read frame from camera")
+            break
 
         # The function converts an input image from one color space to another
         converted_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

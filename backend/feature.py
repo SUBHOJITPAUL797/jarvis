@@ -36,9 +36,13 @@ pygame.mixer.init()
 # Define the function to play sound
 @eel.expose
 def play_assistant_sound():
-    sound_file = r"C:\Users\patha\Videos\Jarvis\frontend\assets\audio\start_sound.mp3"
-    pygame.mixer.music.load(sound_file)
-    pygame.mixer.music.play()
+    sound_file = r"frontend\assets\audio\start_sound.mp3"
+    try:
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+    except pygame.error as e:
+        print(f"Could not load audio file: {e}")
+        print("Continuing without sound...")
     
     
 def openCommand(query):
@@ -187,10 +191,23 @@ def whatsApp(Phone, message, flag, name):
 
 def chatBot(query):
     user_input = query.lower()
-    chatbot = hugchat.ChatBot(cookie_path="backend\cookie.json")
-    id = chatbot.new_conversation()
-    chatbot.change_conversation(id)
-    response =  chatbot.chat(user_input)
-    print(response)
-    speak(response)
-    return response
+    try:
+        import google.generativeai as genai
+        
+        # Configure the Gemini API
+        genai.configure(api_key="AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU")
+        
+        # Create the model
+        model = genai.GenerativeModel('gemini-pro')
+        
+        # Generate response
+        response = model.generate_content(user_input)
+        response_text = response.text
+        
+        print(response_text)
+        speak(response_text)
+        return response_text
+    except Exception as e:
+        print(f"Error with Gemini API: {e}")
+        speak("Sorry, I'm having trouble connecting to the AI service.")
+        return "Error occurred"

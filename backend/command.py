@@ -7,8 +7,13 @@ def speak(text):
     text = str(text)
     engine = pyttsx3.init('sapi5')
     voices = engine.getProperty('voices')
-    # print(voices)
-    engine.setProperty('voice', voices[2].id)
+    
+    # Safely set voice - use available voice or default
+    if len(voices) > 2:
+        engine.setProperty('voice', voices[2].id)
+    elif len(voices) > 0:
+        engine.setProperty('voice', voices[0].id)
+    
     eel.DisplayMessage(text)
     engine.say(text)
     engine.runAndWait()
