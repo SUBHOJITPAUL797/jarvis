@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "python3 app.py"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+
+[env]
+GEMINI_API_KEY = "AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU"
