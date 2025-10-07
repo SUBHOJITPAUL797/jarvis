@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["python39", "opencv", "ffmpeg"]
+nixPkgs = ["python39", "opencv", "ffmpeg", "pip"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = ["python -m pip install -r requirements.txt"]
 
 [phases.build]
 cmds = ["echo 'Build complete'"]
 
 [start]
-cmd = "python run.py"
+cmd = "python app.py"
