@@ -3,21 +3,19 @@ import pyttsx3
 import speech_recognition as sr
 import eel
 
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+if voices:
+    engine.setProperty('voice', voices[0].id)
+engine.setProperty('rate', 174)
+# Block until the rate is set.
+engine.runAndWait()
+
 def speak(text):
     text = str(text)
-    engine = pyttsx3.init('sapi5')
-    voices = engine.getProperty('voices')
-    
-    # Safely set voice - use available voice or default
-    if len(voices) > 2:
-        engine.setProperty('voice', voices[2].id)
-    elif len(voices) > 0:
-        engine.setProperty('voice', voices[0].id)
-    
     eel.DisplayMessage(text)
     engine.say(text)
     engine.runAndWait()
-    engine.setProperty('rate', 174)
     eel.receiverText(text)
 
 # Expose the Python function to JavaScript
