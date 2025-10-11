@@ -36,7 +36,7 @@ pygame.mixer.init()
 # Define the function to play sound
 @eel.expose
 def play_assistant_sound():
-    sound_file = r"frontend\assets\audio\start_sound.mp3"
+    sound_file = os.path.join("frontend", "assets", "audio", "start_sound.mp3")
     try:
         pygame.mixer.music.load(sound_file)
         pygame.mixer.music.play()
@@ -195,7 +195,11 @@ def chatBot(query):
         import google.generativeai as genai
         
         # Configure the Gemini API
-        genai.configure(api_key="AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU")
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if not api_key:
+            speak("Gemini API key not configured")
+            return "API key not configured"
+        genai.configure(api_key=api_key)
         
         # Create the model
         model = genai.GenerativeModel('gemini-pro')

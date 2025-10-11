@@ -1,7 +1,7 @@
 import os
 import eel
-from backend.auth import recoganize
-from backend.auth.recoganize import AuthenticateFace
+from backend.auth import recognize
+from backend.auth.recognize import AuthenticateFace
 from backend.feature import *
 from backend.command import *
 
@@ -18,7 +18,7 @@ def start():
         speak("Welcome to Jarvis")
         speak("Ready for Face Authentication")
         try:
-            flag = recoganize.AuthenticateFace()
+            flag = recognize.AuthenticateFace()
             if flag == 1:
                 speak("Face recognized successfully")
                 eel.hideFaceAuth()
