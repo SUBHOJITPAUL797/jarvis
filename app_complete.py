@@ -102,7 +102,7 @@ def generate_prompt_with_context(message, mode, context=''):
 def index():
     """Main page"""
     session_id = get_or_create_session_id()
-    return render_template('jarvis_complete.html', session_id=session_id)
+    return render_template('jarvis_premium.html', session_id=session_id)
 
 @app.route('/health')
 def health():
