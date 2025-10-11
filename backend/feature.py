@@ -216,8 +216,8 @@ def chatBot(query):
         api_key = os.environ.get('GEMINI_API_KEY', 'AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU')
         genai.configure(api_key=api_key)
         
-        # Create the model
-        model = genai.GenerativeModel('gemini-pro')
+        # Create the model (using the latest flash model)
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Generate response
         response = model.generate_content(user_input)

@@ -22,8 +22,8 @@ def chatBot(query):
         # Configure the Gemini API
         genai.configure(api_key=api_key)
         
-        # Create the model
-        model = genai.GenerativeModel('gemini-pro')
+        # Create the model (using the latest flash model)
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Generate response
         response = model.generate_content(user_input)
