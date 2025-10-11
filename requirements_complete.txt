@@ -3,5 +3,5 @@ flask-cors==4.0.0
 google-generativeai
 python-dotenv==1.0.0
 markdown==3.5.1
-Pillow==10.1.0
+Pillow
 werkzeug==3.0.0
