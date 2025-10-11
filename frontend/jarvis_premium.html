@@ -43,7 +43,8 @@
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             min-height: 100vh;
             color: var(--text-primary);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
         }
 
@@ -229,6 +230,7 @@
             padding: 20px;
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .modes-title {
@@ -425,9 +427,11 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 30px;
             scroll-behavior: smooth;
             position: relative;
+            max-height: calc(100vh - 200px);
         }
 
         .messages-container::-webkit-scrollbar {

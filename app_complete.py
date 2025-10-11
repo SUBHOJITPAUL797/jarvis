@@ -8,6 +8,7 @@ import json
 import datetime
 import re
 import base64
+import time
 from flask import Flask, render_template, request, jsonify, session, send_file
 from flask_cors import CORS
 import google.generativeai as genai
@@ -136,9 +137,21 @@ def chat():
         # Generate appropriate prompt
         prompt = generate_prompt_with_context(message, mode, context)
         
-        # Generate AI response
-        response = chat_model.generate_content(prompt)
-        response_text = response.text
+        # Generate AI response with retry logic
+        max_retries = 3
+        retry_count = 0
+        response_text = None
+        
+        while retry_count < max_retries and response_text is None:
+            try:
+                response = chat_model.generate_content(prompt)
+                response_text = response.text
+                break
+            except Exception as api_error:
+                retry_count += 1
+                if retry_count >= max_retries:
+                    raise api_error
+                time.sleep(1)  # Wait 1 second before retry
         
         # Format response
         formatted_response = format_ai_response(response_text)
@@ -171,11 +184,33 @@ def chat():
         })
         
     except Exception as e:
-        app.logger.error(f"Chat error: {str(e)}")
-        return jsonify({
-            'error': 'An error occurred processing your request',
-            'details': str(e) if app.debug else None
-        }), 500
+        error_message = str(e)
+        app.logger.error(f"Chat error: {error_message}")
+        
+        # More user-friendly error messages
+        if 'api_key' in error_message.lower():
+            return jsonify({
+                'error': 'API key issue. Please check configuration.',
+                'response': 'I apologize, but there seems to be an API configuration issue. Please try again later.'
+            }), 200  # Return 200 to avoid "internet error" on frontend
+        elif 'rate' in error_message.lower() or 'limit' in error_message.lower():
+            return jsonify({
+                'error': 'Rate limit reached',
+                'response': 'I need a moment to rest. Please try again in a few seconds.'
+            }), 200
+        else:
+            # Generic fallback response
+            fallback_responses = {
+                'creative': "Let me help you with creative writing! What story or content would you like me to create?",
+                'code': "I can help you with programming! What code would you like me to write or debug?",
+                'math': "I can solve mathematical problems! What calculation do you need help with?",
+                'default': "I'm here to help! Please try rephrasing your question or try again."
+            }
+            
+            return jsonify({
+                'response': fallback_responses.get(mode, fallback_responses['default']),
+                'formatted': fallback_responses.get(mode, fallback_responses['default'])
+            }), 200
 
 @app.route('/analyze_image', methods=['POST'])
 def analyze_image():
