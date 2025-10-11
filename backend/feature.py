@@ -36,7 +36,8 @@ pygame.mixer.init()
 # Define the function to play sound
 @eel.expose
 def play_assistant_sound():
-    sound_file = r"frontend\assets\audio\start_sound.mp3"
+    # Use forward slashes for cross-platform compatibility
+    sound_file = "frontend/assets/audio/start_sound.mp3"
     try:
         pygame.mixer.music.load(sound_file)
         pygame.mixer.music.play()
@@ -61,7 +62,12 @@ def openCommand(query):
 
             if len(results) != 0:
                 speak("Opening "+query)
-                os.startfile(results[0][0])
+                # Cross-platform file opening
+                import platform
+                if platform.system() == 'Windows':
+                    os.startfile(results[0][0])
+                else:
+                    subprocess.run(['xdg-open', results[0][0]])
 
             elif len(results) == 0: 
                 cursor.execute(
@@ -75,7 +81,11 @@ def openCommand(query):
                 else:
                     speak("Opening "+query)
                     try:
-                        os.system('start '+query)
+                        import platform
+                        if platform.system() == 'Windows':
+                            os.system('start ' + query)
+                        else:
+                            subprocess.run(['xdg-open', query])
                     except:
                         speak("not found")
         except:
@@ -93,9 +103,15 @@ def hotword():
     paud=None
     audio_stream=None
     try:
-       
+        # Check if Porcupine access key is set
+        import os
+        access_key = os.environ.get('PORCUPINE_ACCESS_KEY')
+        if not access_key:
+            print("Porcupine access key not found. Hotword detection disabled.")
+            return
+        
         # pre trained keywords    
-        porcupine=pvporcupine.create(keywords=["jarvis","alexa"]) 
+        porcupine=pvporcupine.create(access_key=access_key, keywords=["jarvis","alexa"]) 
         paud=pyaudio.PyAudio()
         audio_stream=paud.open(rate=porcupine.sample_rate,channels=1,format=pyaudio.paInt16,input=True,frames_per_buffer=porcupine.frame_length)
         
@@ -195,7 +211,10 @@ def chatBot(query):
         import google.generativeai as genai
         
         # Configure the Gemini API
-        genai.configure(api_key="AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU")
+        # Get API key from environment variable for security
+        import os
+        api_key = os.environ.get('GEMINI_API_KEY', 'AIzaSyBIT39QDL7bEQqpOPYXLXxa5ueA8z3SpBU')
+        genai.configure(api_key=api_key)
         
         # Create the model
         model = genai.GenerativeModel('gemini-pro')

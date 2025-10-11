@@ -5,6 +5,13 @@ from backend.auth.recoganize import AuthenticateFace
 from backend.feature import *
 from backend.command import *
 
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("python-dotenv not installed. Using system environment variables only.")
+
 def start():
     # Get port from environment variable (for deployment)
     port = int(os.environ.get('PORT', 8000))
@@ -44,7 +51,13 @@ def start():
         print("Access your Jarvis at the provided URL")
     else:
         # Local development - open browser
-        os.system('start msedge.exe --app="http://127.0.0.1:8000/index.html"')
+        # Cross-platform browser opening
+        import platform
+        import webbrowser
+        if platform.system() == 'Windows':
+            os.system('start msedge.exe --app="http://127.0.0.1:8000/index.html"')
+        else:
+            webbrowser.open(f"http://127.0.0.1:{port}/index.html")
     
     eel.start("index.html", mode=None, host="0.0.0.0", port=port, block=True)
 

@@ -5,6 +5,13 @@ from backend.auth.recoganize import AuthenticateFace
 from backend.feature import *
 from backend.command import *
 
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("python-dotenv not installed. Using system environment variables only.")
+
 
 
 def start():
@@ -37,7 +44,13 @@ def start():
             eel.hideStart()
             play_assistant_sound()
         
-    os.system('start msedge.exe --app="http://127.0.0.1:8000/index.html"')
+    # Cross-platform browser opening
+    import platform
+    import webbrowser
+    if platform.system() == 'Windows':
+        os.system('start msedge.exe --app="http://127.0.0.1:8000/index.html"')
+    else:
+        webbrowser.open("http://127.0.0.1:8000/index.html")
     
     
     

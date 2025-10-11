@@ -5,7 +5,12 @@ import eel
 
 def speak(text):
     text = str(text)
-    engine = pyttsx3.init('sapi5')
+    import platform
+    # Use platform-appropriate TTS engine
+    if platform.system() == 'Windows':
+        engine = pyttsx3.init('sapi5')
+    else:
+        engine = pyttsx3.init()  # Use default engine for Linux/Mac
     voices = engine.getProperty('voices')
     
     # Safely set voice - use available voice or default
@@ -24,7 +29,8 @@ def speak(text):
 
 def takecommand():
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    try:
+        with sr.Microphone() as source:
         print("I'm listening...")
         eel.DisplayMessage("I'm listening...")
         r.pause_threshold = 1
@@ -45,6 +51,10 @@ def takecommand():
         return None
 
     return query.lower()
+    except OSError as e:
+        print(f"Microphone error: {e}")
+        eel.DisplayMessage("Microphone not available")
+        return None
 
 
 
