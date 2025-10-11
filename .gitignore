@@ -4,6 +4,10 @@ __pycache__/
 *$py.class
 *.so
 .Python
+env/
+envJarvis/
+venv/
+ENV/
 build/
 develop-eggs/
 dist/
@@ -20,24 +24,21 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
-envJarvis/
-venv/
-ENV/
-env/
-.venv/
+# Environment variables
+.env
+.env.local
 
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
@@ -46,17 +47,11 @@ Thumbs.db
 # Logs
 *.log
 
-# Database
-*.db
-*.sqlite
-
 # Temporary files
 temp/
 tmp/
-*.tmp
+tempCodeRunnerFile.py
 
-# Cloudflare Workers (not needed for Railway)
-worker.js
-wrangler.toml
-package.json
-package-lock.json
+# Face recognition samples (contain personal data)
+backend/auth/samples/
+backend/auth/trainer/*.yml

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jarvis Assistant</title>
+    <link
+      rel="shortcut icon"
+      href="/frontend/assets/img/logo.ico"
+      type="image/x-icon"
+    />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+    
+    <style>
+      /* Simplified styles for web deployment */
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Arial', sans-serif;
+      }
+      
+      .chat-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+      }
+      
+      .chat-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      
+      .chat-messages {
+        height: 400px;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+      }
+      
+      .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-wrap: break-word;
+      }
+      
+      .user-message {
+        background: #667eea;
+        color: white;
+        margin-left: auto;
+        text-align: right;
+      }
+      
+      .assistant-message {
+        background: white;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+      
+      .chat-input {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #ddd;
+      }
+      
+      .input-group {
+        display: flex;
+        gap: 10px;
+      }
+      
+      .form-control {
+        border-radius: 25px;
+        padding: 12px 20px;
+        border: 1px solid #ddd;
+      }
+      
+      .btn-send {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      
+      .btn-send:hover {
+        transform: scale(1.05);
+      }
+      
+      .typing-indicator {
+        display: none;
+        padding: 10px;
+        color: #666;
+        font-style: italic;
+      }
+      
+      .typing-indicator.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h2><i class="bi bi-robot"></i> Jarvis Assistant</h2>
+          <p class="mb-0">AI-Powered Chat Assistant</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+          <div class="message assistant-message">
+            Welcome! I'm Jarvis, your AI assistant. How can I help you today?
+          </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+          <i class="bi bi-three-dots"></i> Jarvis is typing...
+        </div>
+        
+        <div class="chat-input">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="messageInput"
+              placeholder="Type your message..."
+              autofocus
+            />
+            <button class="btn btn-send" onclick="sendMessage()">
+              <i class="bi bi-send"></i> Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eel.js -->
+    <script type="text/javascript" src="/eel.js"></script>
+    
+    <script>
+      // Initialize Eel and call init function
+      window.onload = function() {
+        if (typeof eel !== 'undefined') {
+          eel.init();
+        }
+      };
+
+      // Hide unnecessary elements (compatibility with existing functions)
+      eel.expose(hideLoader);
+      function hideLoader() {
+        // No loader in simplified version
+      }
+
+      eel.expose(hideFaceAuth);
+      function hideFaceAuth() {
+        // No face auth in web version
+      }
+
+      eel.expose(hideFaceAuthSuccess);
+      function hideFaceAuthSuccess() {
+        // No face auth in web version
+      }
+
+      eel.expose(hideStart);
+      function hideStart() {
+        // No start screen in web version
+      }
+
+      eel.expose(ShowHood);
+      function ShowHood() {
+        // Enable input after response
+        document.getElementById('messageInput').disabled = false;
+        document.getElementById('typingIndicator').classList.remove('show');
+      }
+
+      eel.expose(DisplayMessage);
+      function DisplayMessage(message) {
+        // Show typing indicator for assistant messages
+        if (!document.getElementById('messageInput').disabled) {
+          document.getElementById('typingIndicator').classList.add('show');
+        }
+      }
+
+      eel.expose(senderText);
+      function senderText(message) {
+        addMessage(message, 'user');
+      }
+
+      eel.expose(receiverText);
+      function receiverText(message) {
+        addMessage(message, 'assistant');
+        document.getElementById('typingIndicator').classList.remove('show');
+      }
+
+      function addMessage(message, sender) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        messageDiv.textContent = message;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        
+        if (message) {
+          // Disable input while processing
+          input.disabled = true;
+          
+          // Clear input
+          input.value = '';
+          
+          // Send to backend
+          eel.takeAllCommands(message);
+        }
+      }
+
+      // Send message on Enter key
+      document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
