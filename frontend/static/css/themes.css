@@ -1,0 +1,80 @@
+/* Dark Theme */
+body.dark-theme {
+    --primary-bg: #0a0a0f;
+    --secondary-bg: #1a1a2e;
+    --card-bg: #16213e;
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8b8;
+    --border-color: #3a3a5e;
+}
+
+body.dark-theme .chat-container {
+    background: rgba(22, 33, 62, 0.95);
+}
+
+body.dark-theme .messages-area {
+    background: #0a0a0f;
+}
+
+body.dark-theme .assistant .message-bubble {
+    background: #1a1a2e;
+    color: #ffffff;
+    border-color: #3a3a5e;
+}
+
+body.dark-theme .input-area {
+    background: #1a1a2e;
+    border-top-color: #3a3a5e;
+}
+
+body.dark-theme .message-input {
+    background: #0a0a0f;
+    color: #ffffff;
+    border-color: #3a3a5e;
+}
+
+body.dark-theme .quick-action {
+    background: #16213e;
+    color: #ffffff;
+    border-color: #3a3a5e;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .message-bubble {
+        border-width: 2px;
+    }
+    
+    .send-btn {
+        border: 2px solid white;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sidebar,
+    .chat-header,
+    .input-area,
+    .quick-actions {
+        display: none !important;
+    }
+    
+    .messages-area {
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .message-bubble {
+        break-inside: avoid;
+    }
+}
